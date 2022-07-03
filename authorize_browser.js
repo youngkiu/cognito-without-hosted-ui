@@ -1,5 +1,8 @@
 import puppeteer from 'puppeteer';
 import url from 'url';
+import qs from 'qs';
+import axios from 'axios';
+import _ from 'lodash';
 
 // https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
 function parseQuery(queryString) {
@@ -62,9 +65,43 @@ async function getCode(domainName, clientId, redirectUri, username, password) {
     return parsedQuery.code;
 }
 
+async function getToken(domainName, clientId, clientSecret, redirectUri, code) {
+    const tokenUri = `https://${domainName}/oauth2/token`;
+    const auth = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`;
+    const tokennRes = await axios.request({
+        url: tokenUri,
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            Authorization: auth,
+        },
+        data: qs.stringify({
+            grant_type: 'authorization_code',
+            client_id: clientId,
+            code,
+            redirect_uri: redirectUri,
+        }),
+    });
+    return _.mapKeys(tokennRes.data, (v, k) => _.camelCase(k));
+}
+
+async function getUserInfo(domainName, accessToken) {
+    const userInfoUri = `https://${domainName}/oauth2/userInfo`;
+    const userInfoRes = await axios.request({
+        url: userInfoUri,
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    return _.mapKeys(userInfoRes.data, (v, k) => _.camelCase(k));
+}
+
 async function main(domainName, clientId, clientSecret, redirectUri, username, password) {
     const code = await getCode(domainName, clientId, redirectUri, username, password);
-    console.log(code);
+    const token = await getToken(domainName, clientId, clientSecret, redirectUri, code);
+    const userInfo = await getUserInfo(domainName, token.accessToken);
+    console.log(code, token, userInfo);
 }
 
 const AUTH_DOMAIN = process.env.AUTH_DOMAIN;
