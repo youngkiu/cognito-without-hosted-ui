@@ -110,5 +110,11 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
+console.assert(AUTH_DOMAIN, 'Set the Cognito app domain name as an environment variable.');
+console.assert(CLIENT_ID, 'Set the Cognito app Client ID as an environment variable.');
+console.assert(CLIENT_SECRET, 'Set the Cognito app Client Secret as an environment variable.');
+console.assert(REDIRECT_URI, 'Set the Cognito app Callback URL as an environment variable.');
+console.assert(USERNAME, 'Set username of Cognito User Pool as environment variable.');
+console.assert(PASSWORD, 'Set password of Cognito User Pool as environment variable.');
 
 main(AUTH_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, USERNAME, PASSWORD);
