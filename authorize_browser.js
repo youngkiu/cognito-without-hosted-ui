@@ -104,12 +104,7 @@ async function main(domainName, clientId, clientSecret, redirectUri, username, p
     console.log(code, token, userInfo);
 }
 
-const AUTH_DOMAIN = process.env.AUTH_DOMAIN;
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
-const USERNAME = process.env.USERNAME;
-const PASSWORD = process.env.PASSWORD;
+const { AUTH_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, USERNAME, PASSWORD } = process.env;
 console.assert(AUTH_DOMAIN, 'Set the Cognito app domain name as an environment variable.');
 console.assert(CLIENT_ID, 'Set the Cognito app Client ID as an environment variable.');
 console.assert(CLIENT_SECRET, 'Set the Cognito app Client Secret as an environment variable.');
